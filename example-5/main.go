@@ -21,7 +21,7 @@ func main() {
 
 	// after the workflow instance is created
 
-	subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "stocker", "reserveOrderItems")
+	subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "sample-app", "payment-service")
 
 	osCh := make(chan os.Signal, 1)
 	signal.Notify(osCh, os.Interrupt)
