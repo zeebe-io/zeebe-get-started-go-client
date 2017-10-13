@@ -10,6 +10,13 @@ Run examples with
 go run main.go
 ```
 
+* [Web Site](https://zeebe.io)
+* [Documentation](https://docs.zeebe.io)
+* [Issue Tracker](https://github.com/zeebe-io/zeebe/issues)
+* [Slack Channel](https://zeebe-slackin.herokuapp.com/)
+* [User Forum](https://forum.zeebe.io)
+* [Contribution Guidelines](/CONTRIBUTING.md)
+
 ## Code of Conduct
 
 This project adheres to the Contributor Covenant [Code of
