@@ -19,16 +19,14 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	// after the workflow instance is created
-
-	subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "sample-app", "payment-service")
+	subscriptionCh, sub, err := zbClient.TopicConsumer(topicName, "subscription-name", 0)
 
 	osCh := make(chan os.Signal, 1)
 	signal.Notify(osCh, os.Interrupt)
 	go func() {
 		<-osCh
 		fmt.Println("Closing subscription.")
-		_, err := zbClient.CloseTaskSubscription(subscription)
+		_, err := zbClient.CloseTopicSubscription(sub)
 		if err != nil {
 			fmt.Println("failed to close subscription: ", err)
 		} else {
@@ -40,10 +38,6 @@ func main() {
 	for {
 		message := <-subscriptionCh
 		fmt.Println(message.String())
-
-
-		response, _ := zbClient.CompleteTask(message)
-		fmt.Println(response)
 	}
 
 }

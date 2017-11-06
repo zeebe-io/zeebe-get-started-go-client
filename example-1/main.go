@@ -4,6 +4,7 @@ import (
 	"github.com/zeebe-io/zbc-go/zbc"
 	"fmt"
 	"errors"
+	"encoding/json"
 )
 
 const BrokerAddr = "0.0.0.0:51015"
@@ -16,5 +17,6 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	fmt.Println(zbClient.Cluster.TopicLeaders)
+	b, err := json.MarshalIndent(zbClient.Cluster.TopicLeaders, "", "    ")
+	fmt.Println(string(b))
 }
