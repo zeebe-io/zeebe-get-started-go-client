@@ -18,8 +18,10 @@ func main() {
 	}
 
 	// After the workflow is deployed.
+	payload := make(map[string]interface{})
+	payload["orderId"] = "31243"
 
-	instance := zbc.NewWorkflowInstance("order-process", -1, nil)
+	instance := zbc.NewWorkflowInstance("order-process", -1, payload)
 	msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
 
 	if err != nil {

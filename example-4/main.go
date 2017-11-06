@@ -6,7 +6,6 @@ import (
 	"github.com/zeebe-io/zbc-go/zbc"
 	"os"
 	"os/signal"
-	"log"
 )
 
 const topicName = "default-topic"
@@ -18,16 +17,6 @@ func main() {
 	zbClient, err := zbc.NewClient(brokerAddr)
 	if err != nil {
 		panic(errClientStartFailed)
-	}
-
-	payload := make(map[string]interface{})
-	payload["a"] = "b"
-	instance := zbc.NewWorkflowInstance("order-process", -1, payload)
-
-	msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
-	fmt.Println(msg.String())
-	if err != nil {
-		panic(err)
 	}
 
 	subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "sample-app", "payment-service")
@@ -48,7 +37,6 @@ func main() {
 	}()
 
 	for {
-		log.Println("Waiting for events")
 		message := <-subscriptionCh
 		fmt.Println(message.String())
 
