@@ -1,8 +1,0 @@
-state: CREATE
-type: payment-service
-retries: 3
-headers:
-  k1: a
-  k2: b
-payload:
-  foo: bar
