@@ -20,7 +20,6 @@ func main() {
 	}
 
 	subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "sample-app", "payment-service")
-	fmt.Println(subscription.String())
 
 	osCh := make(chan os.Signal, 1)
 	signal.Notify(osCh, os.Interrupt)
