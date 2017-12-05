@@ -17,6 +17,11 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	b, err := json.MarshalIndent(zbClient.Cluster.TopicLeaders, "", "    ")
+	topology, err := zbClient.Topology()
+	if err != nil {
+		panic(err)
+	}
+
+	b, err := json.MarshalIndent(topology, "", "    ")
 	fmt.Println(string(b))
 }
