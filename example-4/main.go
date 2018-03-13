@@ -1,11 +1,14 @@
 package main
 
 import (
-    "errors"
-    "fmt"
-    "github.com/zeebe-io/zbc-go/zbc"
-    "os"
-    "os/signal"
+	"errors"
+	"fmt"
+	"github.com/zeebe-io/zbc-go/zbc"
+	"github.com/zeebe-io/zbc-go/zbc/common"
+	"github.com/zeebe-io/zbc-go/zbc/models/zbsubscriptions"
+	"github.com/zeebe-io/zbc-go/zbc/services/zbsubscribe"
+	"os"
+	"os/signal"
 )
 
 const topicName = "default-topic"
@@ -14,55 +17,56 @@ const brokerAddr = "0.0.0.0:51015"
 var errClientStartFailed = errors.New("cannot start client")
 
 func main() {
-    zbClient, err := zbc.NewClient(brokerAddr)
-    if err != nil {
-        panic(err)
-    }
+	zbClient, err := zbc.NewClient(brokerAddr)
+	if err != nil {
+		panic(err)
+	}
 
-    // deploy workflow
-    response, err := zbClient.CreateWorkflowFromFile(topicName, zbc.BpmnXml, "order-process.bpmn")
-    if err != nil {
-        panic(err)
-    }
+	// deploy workflow
+	response, err := zbClient.CreateWorkflowFromFile(topicName, zbcommon.BpmnXml, "order-process.bpmn")
+	if err != nil {
+		panic(err)
+	}
 
-    fmt.Println(response.String())
+	fmt.Println(response.String())
 
-    // create a new workflow instance
-    payload := make(map[string]interface{})
-    payload["orderId"] = "31243"
+	// create a new workflow instance
+	payload := make(map[string]interface{})
+	payload["orderId"] = "31243"
 
-    instance := zbc.NewWorkflowInstance("order-process", -1, payload)
-    msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
+	instance := zbc.NewWorkflowInstance("order-process", -1, payload)
+	msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
 
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    fmt.Println(msg.String())
+	fmt.Println(msg.String())
 
-    // open a task subscription for the payment-service task
-    subscriptionCh, subscription, err := zbClient.TaskConsumer(topicName, "sample-app", "payment-service")
+	subscription, err := zbClient.TaskSubscription(topicName, "sample-app", "payment-service", 32, func(client zbsubscribe.ZeebeAPI, event *zbsubscriptions.SubscriptionEvent) {
+		fmt.Println(event.String())
 
-    osCh := make(chan os.Signal, 1)
-    signal.Notify(osCh, os.Interrupt)
-    go func() {
-        <-osCh
-        fmt.Println("Closing subscription.")
-        _, err := zbClient.CloseTaskSubscription(subscription)
-        if err != nil {
-            fmt.Println("failed to close subscription: ", err)
-        } else {
-            fmt.Println("Subscription closed.")
-        }
-        os.Exit(0)
-    }()
+		// complete task after processing
+		response, _ := client.CompleteTask(event)
+		fmt.Println(response)
+	})
 
-    for {
-        message := <-subscriptionCh
-        fmt.Println(message.String())
+	if err != nil {
+		panic("Unable to open subscription")
+	}
 
-        // complete task after processing
-        response, _ := zbClient.CompleteTask(message)
-        fmt.Println(response)
-    }
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		err := subscription.Close()
+		if err != nil {
+			panic("Failed to close subscription")
+		}
+
+		fmt.Println("Closed subscription")
+		os.Exit(0)
+	}()
+
+	subscription.Start()
 }
