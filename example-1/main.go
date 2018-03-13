@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/zeebe-io/zbc-go/zbc"
-	"fmt"
-	"errors"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/zeebe-io/zbc-go/zbc"
 )
 
 const BrokerAddr = "0.0.0.0:51015"
@@ -17,7 +17,7 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	topology, err := zbClient.Topology()
+	topology, err := zbClient.RefreshTopology()
 	if err != nil {
 		panic(err)
 	}
