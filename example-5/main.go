@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/zeebe-io/zbc-go/zbc"
+	"github.com/zeebe-io/zbc-go/zbc/models/zbsubscriptions"
+	"github.com/zeebe-io/zbc-go/zbc/services/zbsubscribe"
 	"os"
 	"os/signal"
 )
@@ -13,31 +15,34 @@ const brokerAddr = "0.0.0.0:51015"
 
 var errClientStartFailed = errors.New("cannot start client")
 
+func handler(client zbsubscribe.ZeebeAPI, event *zbsubscriptions.SubscriptionEvent) error {
+	fmt.Printf("Event: %v\n", event)
+	return nil
+}
+
 func main() {
 	zbClient, err := zbc.NewClient(brokerAddr)
 	if err != nil {
 		panic(errClientStartFailed)
 	}
 
-	subscriptionCh, sub, err := zbClient.TopicConsumer(topicName, "subscription-name", 0)
+	subscription, err := zbClient.TopicSubscription(topicName, "subscrition-name", 128, 0, true, handler)
+
+	if err != nil {
+		panic("Failed to open subscription")
+	}
 
 	osCh := make(chan os.Signal, 1)
 	signal.Notify(osCh, os.Interrupt)
 	go func() {
 		<-osCh
-		fmt.Println("Closing subscription.")
-		_, err := zbClient.CloseTopicSubscription(sub)
+		err := subscription.Close()
 		if err != nil {
-			fmt.Println("failed to close subscription: ", err)
-		} else {
-			fmt.Println("Subscription closed.")
+			panic("Failed to close subscription")
 		}
+		fmt.Println("Subscription closed.")
 		os.Exit(0)
 	}()
 
-	for {
-		message := <-subscriptionCh
-		fmt.Println(message.String())
-	}
-
+	subscription.Start()
 }
