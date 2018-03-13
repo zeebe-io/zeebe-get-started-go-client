@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/zeebe-io/zbc-go/zbc"
+	"github.com/zeebe-io/zbc-go/zbc/common"
 )
 
 const topicName = "default-topic"
@@ -18,7 +19,7 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	response, err := zbClient.CreateWorkflowFromFile(topicName, zbc.BpmnXml, "order-process.bpmn")
+	response, err := zbClient.CreateWorkflowFromFile(topicName, zbcommon.BpmnXml, "order-process.bpmn")
 	if err != nil {
 		panic(errWorkflowDeploymentFailed)
 	}
