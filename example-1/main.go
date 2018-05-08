@@ -17,7 +17,7 @@ func main() {
 		panic(errClientStartFailed)
 	}
 
-	topology, err := zbClient.RefreshTopology()
+	topology, err := zbClient.GetTopology()
 	if err != nil {
 		panic(err)
 	}
