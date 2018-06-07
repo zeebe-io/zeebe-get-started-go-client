@@ -16,7 +16,6 @@
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
           <zeebe:input source="$.orderId" target="$.orderId" />
-          <zeebe:output source="$.totalPrice" target="$.totalPrice" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_18tqka5</bpmn:incoming>
