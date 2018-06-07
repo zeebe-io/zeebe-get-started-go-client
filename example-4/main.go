@@ -43,11 +43,11 @@ func main() {
 
 	fmt.Println(msg.String())
 
-	subscription, err := zbClient.TaskSubscription(topicName, "sample-app", "payment-service", 1000, 32, func(client zbsubscribe.ZeebeAPI, event *zbsubscriptions.SubscriptionEvent) {
+	subscription, err := zbClient.JobSubscription(topicName, "sample-app", "payment-service", 1000, 32, func(client zbsubscribe.ZeebeAPI, event *zbsubscriptions.SubscriptionEvent) {
 		fmt.Println(event.String())
 
-		// complete task after processing
-		response, _ := client.CompleteTask(event)
+		// complete job after processing
+		response, _ := client.CompleteJob(event)
 		fmt.Println(response)
 	})
 
