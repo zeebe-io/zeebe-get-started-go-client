@@ -1,29 +1,28 @@
 package main
 
 import (
-	"errors"
-	"github.com/zeebe-io/zbc-go/zbc"
 	"fmt"
+	"github.com/zeebe-io/zeebe/clients/go"
 )
 
-const topicName = "default-topic"
-const brokerAddr = "0.0.0.0:51015"
-
-var errClientStartFailed = errors.New("cannot start client")
+const brokerAddr = "0.0.0.0:26500"
 
 func main() {
-	zbClient, err := zbc.NewClient(brokerAddr)
+	client, err := zbc.NewZBClient(brokerAddr)
 	if err != nil {
-		panic(errClientStartFailed)
+		panic(err)
 	}
 
 	// After the workflow is deployed.
 	payload := make(map[string]interface{})
 	payload["orderId"] = "31243"
 
-	instance := zbc.NewWorkflowInstance("order-process", -1, payload)
-	msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
+	request, err := client.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().PayloadFromMap(payload)
+	if err != nil {
+		panic(err)
+	}
 
+	msg, err := request.Send()
 	if err != nil {
 		panic(err)
 	}

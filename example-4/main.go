@@ -1,29 +1,21 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"github.com/zeebe-io/zbc-go/zbc"
-	"github.com/zeebe-io/zbc-go/zbc/common"
-	"github.com/zeebe-io/zbc-go/zbc/models/zbsubscriptions"
-	"github.com/zeebe-io/zbc-go/zbc/services/zbsubscribe"
-	"os"
-	"os/signal"
+	"github.com/zeebe-io/zeebe/clients/go"
+	"time"
 )
 
-const topicName = "default-topic"
-const brokerAddr = "0.0.0.0:51015"
-
-var errClientStartFailed = errors.New("cannot start client")
+const brokerAddr = "0.0.0.0:26500"
 
 func main() {
-	zbClient, err := zbc.NewClient(brokerAddr)
+	client, err := zbc.NewZBClient(brokerAddr)
 	if err != nil {
 		panic(err)
 	}
 
 	// deploy workflow
-	response, err := zbClient.CreateWorkflowFromFile(topicName, zbcommon.BpmnXml, "order-process.bpmn")
+	response, err := client.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send()
 	if err != nil {
 		panic(err)
 	}
@@ -34,39 +26,28 @@ func main() {
 	payload := make(map[string]interface{})
 	payload["orderId"] = "31243"
 
-	instance := zbc.NewWorkflowInstance("order-process", -1, payload)
-	msg, err := zbClient.CreateWorkflowInstance(topicName, instance)
-
+	request, err := client.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().PayloadFromMap(payload)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(msg.String())
-
-	subscription, err := zbClient.JobSubscription(topicName, "sample-app", "payment-service", 1000, 32, func(client zbsubscribe.ZeebeAPI, event *zbsubscriptions.SubscriptionEvent) {
-		fmt.Println(event.String())
-
-		// complete job after processing
-		response, _ := client.CompleteJob(event)
-		fmt.Println(response)
-	})
-
+	result, err := request.Send()
 	if err != nil {
-		panic("Unable to open subscription")
+		panic(err)
 	}
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		<-c
-		err := subscription.Close()
-		if err != nil {
-			panic("Failed to close subscription")
-		}
+	fmt.Println(result.String())
 
-		fmt.Println("Closed subscription")
-		os.Exit(0)
-	}()
+	// sleep to allow job to be created
+	time.Sleep(1 * time.Second)
 
-	subscription.Start()
+	jobs, err := client.NewActivateJobsCommand().JobType("payment-service").Amount(1).WorkerName("sample-app").Timeout(1 * time.Minute).Send()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, job := range jobs {
+		client.NewCompleteJobCommand().JobKey(job.GetKey()).Send()
+		fmt.Println("Completed job", job.String())
+	}
 }

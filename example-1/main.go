@@ -1,27 +1,39 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/zeebe-io/zbc-go/zbc"
+	"github.com/zeebe-io/zeebe/clients/go"
+	"github.com/zeebe-io/zeebe/clients/go/pb"
 )
 
-const BrokerAddr = "0.0.0.0:51015"
-
-var errClientStartFailed = errors.New("cannot start client")
+const BrokerAddr = "0.0.0.0:26500"
 
 func main() {
-	zbClient, err := zbc.NewClient(BrokerAddr)
-	if err != nil {
-		panic(errClientStartFailed)
-	}
-
-	topology, err := zbClient.GetTopology()
+	zbClient, err := zbc.NewZBClient(BrokerAddr)
 	if err != nil {
 		panic(err)
 	}
 
-	b, err := json.MarshalIndent(topology, "", "    ")
-	fmt.Println(string(b))
+	topology, err := zbClient.NewTopologyCommand().Send()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, broker := range topology.Brokers {
+		fmt.Println("Broker", broker.Host, ":", broker.Port)
+		for _, partition := range broker.Partitions {
+			fmt.Println("  Partition", partition.PartitionId, ":", roleToString(partition.Role))
+		}
+	}
+}
+
+func roleToString(role pb.Partition_PartitionBrokerRole) string {
+	switch role {
+	case  pb.Partition_LEADER:
+		return "Leader"
+	case pb.Partition_FOLLOW:
+		return "Follower"
+	default:
+		return "Unknown"
+	}
 }
