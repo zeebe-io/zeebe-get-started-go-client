@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/zeebe-io/zeebe/clients/go/entities"
+	"github.com/zeebe-io/zeebe/clients/go/worker"
 	"github.com/zeebe-io/zeebe/clients/go/zbc"
-	"time"
+	"log"
 )
 
 const brokerAddr = "0.0.0.0:26500"
@@ -38,16 +40,45 @@ func main() {
 
 	fmt.Println(result.String())
 
-	// sleep to allow job to be created
-	time.Sleep(1 * time.Second)
+	jobWorker := client.NewJobWorker().JobType("payment-service").Handler(handleJob).Open()
+	defer jobWorker.Close()
 
-	jobs, err := client.NewActivateJobsCommand().JobType("payment-service").Amount(1).WorkerName("sample-app").Timeout(1 * time.Minute).Send()
+	jobWorker.AwaitClose()
+}
+
+func handleJob(client worker.JobClient, job entities.Job) {
+	jobKey := job.GetKey()
+
+	headers, err := job.GetCustomHeadersAsMap()
 	if err != nil {
-		panic(err)
+		// failed to handle job as we require the custom job headers
+		failJob(client, job)
+		return
 	}
 
-	for _, job := range jobs {
-		client.NewCompleteJobCommand().JobKey(job.GetKey()).Send()
-		fmt.Println("Completed job", job.String())
+	payload, err := job.GetPayloadAsMap()
+	if err != nil {
+		// failed to handle job as we require the payload
+		failJob(client, job)
+		return
 	}
+
+	payload["totalPrice"] = 46.50;
+	request, err := client.NewCompleteJobCommand().JobKey(jobKey).PayloadFromMap(payload)
+	if err != nil {
+		// failed to set the updated payload
+		failJob(client, job)
+		return
+	}
+
+	log.Println("Complete job", jobKey, "of type", job.Type)
+	log.Println("Processing order:", payload["orderId"])
+	log.Println("Collect money using payment method:", headers["method"])
+
+	request.Send()
+}
+
+func failJob(client worker.JobClient, job entities.Job) {
+	log.Println("Failed to complete job", job.GetKey())
+	client.NewFailJobCommand().JobKey(job.GetKey()).Retries(job.Retries - 1).Send()
 }

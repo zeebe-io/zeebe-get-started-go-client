@@ -29,7 +29,7 @@ func main() {
 
 func roleToString(role pb.Partition_PartitionBrokerRole) string {
 	switch role {
-	case  pb.Partition_LEADER:
+	case pb.Partition_LEADER:
 		return "Leader"
 	case pb.Partition_FOLLOWER:
 		return "Follower"
