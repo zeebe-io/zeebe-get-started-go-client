@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/zeebe-io/zeebe/clients/go"
+	"github.com/zeebe-io/zeebe/clients/go/zbc"
 	"time"
 )
 
