@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/zeebe-io/zeebe/clients/go"
+	"github.com/zeebe-io/zeebe/clients/go/zbc"
 )
 
 const brokerAddr = "0.0.0.0:26500"
