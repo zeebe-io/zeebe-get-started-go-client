@@ -12,7 +12,9 @@ import (
 const brokerAddr = "0.0.0.0:26500"
 
 func main() {
-	client, err := zbc.NewZBClient(brokerAddr)
+	client, err := zbc.NewZBClient(&zbc.ZBClientConfig{
+		GatewayAddress: brokerAddr,
+		UsePlaintextConnection: true})
 	if err != nil {
 		panic(err)
 	}
