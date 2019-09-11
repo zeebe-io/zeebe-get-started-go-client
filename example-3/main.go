@@ -6,11 +6,11 @@ import (
 	"github.com/zeebe-io/zeebe/clients/go/zbc"
 )
 
-const brokerAddr = "0.0.0.0:26500"
+const BrokerAddr = "0.0.0.0:26500"
 
 func main() {
-	client, err := zbc.NewZBClient(&zbc.ZBClientConfig{
-		GatewayAddress: brokerAddr,
+	zbClient, err := zbc.NewZBClientWithConfig(&zbc.ZBClientConfig{
+		GatewayAddress: BrokerAddr,
 		UsePlaintextConnection: true})
 	if err != nil {
 		panic(err)
@@ -20,7 +20,7 @@ func main() {
 	variables := make(map[string]interface{})
 	variables["orderId"] = "31243"
 
-	request, err := client.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().VariablesFromMap(variables)
+	request, err := zbClient.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().VariablesFromMap(variables)
 	if err != nil {
 		panic(err)
 	}

@@ -5,11 +5,11 @@ import (
 	"github.com/zeebe-io/zeebe/clients/go/zbc"
 )
 
-const brokerAddr = "0.0.0.0:26500"
+const BrokerAddr = "0.0.0.0:26500"
 
 func main() {
-	zbClient, err := zbc.NewZBClient(&zbc.ZBClientConfig{
-		GatewayAddress: brokerAddr,
+	zbClient, err := zbc.NewZBClientWithConfig(&zbc.ZBClientConfig{
+		GatewayAddress: BrokerAddr,
 		UsePlaintextConnection: true})
 	if err != nil {
 		panic(err)
