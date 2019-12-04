@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/zeebe-io/zeebe/clients/go/entities"
-	"github.com/zeebe-io/zeebe/clients/go/worker"
-	"github.com/zeebe-io/zeebe/clients/go/zbc"
+	"github.com/zeebe-io/zeebe/clients/go/pkg/entities"
+	"github.com/zeebe-io/zeebe/clients/go/pkg/worker"
+	"github.com/zeebe-io/zeebe/clients/go/pkg/zbc"
 )
 
 const BrokerAddr = "0.0.0.0:26500"
 
 func main() {
-	zbClient, err := zbc.NewZBClientWithConfig(&zbc.ZBClientConfig{
-		GatewayAddress: BrokerAddr,
+	zbClient, err := zbc.NewClient(&zbc.ClientConfig{
+		GatewayAddress:         BrokerAddr,
 		UsePlaintextConnection: true})
 	if err != nil {
 		panic(err)
