@@ -1,12 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
-
 	"github.com/zeebe-io/zeebe/clients/go/pkg/entities"
 	"github.com/zeebe-io/zeebe/clients/go/pkg/worker"
 	"github.com/zeebe-io/zeebe/clients/go/pkg/zbc"
+	"log"
 )
 
 const BrokerAddr = "0.0.0.0:26500"
@@ -19,8 +19,10 @@ func main() {
 		panic(err)
 	}
 
+	ctx := context.Background()
+
 	// deploy workflow
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send()
+	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +38,7 @@ func main() {
 		panic(err)
 	}
 
-	result, err := request.Send()
+	result, err := request.Send(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -78,10 +80,15 @@ func handleJob(client worker.JobClient, job entities.Job) {
 	log.Println("Processing order:", variables["orderId"])
 	log.Println("Collect money using payment method:", headers["method"])
 
-	request.Send()
+	ctx := context.Background()
+
+	request.Send(ctx)
 }
 
 func failJob(client worker.JobClient, job entities.Job) {
 	log.Println("Failed to complete job", job.GetKey())
-	client.NewFailJobCommand().JobKey(job.GetKey()).Retries(job.Retries - 1).Send()
+
+	ctx := context.Background()
+
+	client.NewFailJobCommand().JobKey(job.GetKey()).Retries(job.Retries - 1).Send(ctx)
 }

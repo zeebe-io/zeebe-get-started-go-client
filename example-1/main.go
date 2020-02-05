@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/zeebe-io/zeebe/clients/go/pkg/pb"
 	"github.com/zeebe-io/zeebe/clients/go/pkg/zbc"
@@ -17,7 +18,9 @@ func main() {
 		panic(err)
 	}
 
-	topology, err := zbClient.NewTopologyCommand().Send()
+	ctx := context.Background()
+
+	topology, err := zbClient.NewTopologyCommand().Send(ctx)
 	if err != nil {
 		panic(err)
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/zeebe-io/zeebe/clients/go/pkg/zbc"
 )
@@ -15,7 +16,9 @@ func main() {
 		panic(err)
 	}
 
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send()
+	ctx := context.Background()
+
+	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}
