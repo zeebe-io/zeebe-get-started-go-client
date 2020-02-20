@@ -1,7 +1,7 @@
 # Zeebe get start with Go client
 
 
-You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/go-client/get-started)
+You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/clients/go-client/get-started.html)
 
 First start a broker
 
