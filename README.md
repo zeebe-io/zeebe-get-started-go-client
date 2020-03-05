@@ -6,7 +6,7 @@ You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/go-
 First start a broker
 
 ```
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.23.0-alpha1
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.23.0-alpha2
 ```
 
 Run examples with
