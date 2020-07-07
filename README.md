@@ -5,13 +5,28 @@ You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/cli
 
 First start a broker
 
-```
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.23.0
+```shell
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.24.0
 ```
 
-Run examples with
+The simplest way is to use the Makefile:
 
+```shell
+make test
 ```
+
+Otherwise, you have to run the following:
+
+```shell
+go mod tidy
+go mod verify
+cd example-1
+go run main.go
+cd ../example-2
+go run main.go
+cd ../example-3
+go run main.go
+cd ../example-4
 go run main.go
 ```
 
