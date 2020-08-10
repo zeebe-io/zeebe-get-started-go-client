@@ -6,28 +6,14 @@ You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/cli
 First start a broker
 
 ```shell
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.24.0
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.24.1
 ```
 
-The simplest way is to use the Makefile:
+Then run any example in `src`:
 
 ```shell
-make test
-```
-
-Otherwise, you have to run the following:
-
-```shell
-go mod tidy
-go mod verify
-cd example-1
-go run main.go
-cd ../example-2
-go run main.go
-cd ../example-3
-go run main.go
-cd ../example-4
-go run main.go
+cd src
+go run example-4.go
 ```
 
 * [Web Site](https://zeebe.io)
@@ -36,6 +22,16 @@ go run main.go
 * [Slack Channel](https://zeebe-slackin.herokuapp.com/)
 * [User Forum](https://forum.zeebe.io)
 * [Contribution Guidelines](/CONTRIBUTING.md)
+
+## Updating this guide
+
+To update this guide for a version X.Y.Z, run:
+
+```shell
+./update-version.sh X.Y.Z
+```
+
+Check the output to see if the examples were executed successfully. If not, adjust them and re-run the script. 
 
 ## Code of Conduct
 

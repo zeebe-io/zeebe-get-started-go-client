@@ -11,7 +11,8 @@ const BrokerAddr = "0.0.0.0:26500"
 func main() {
 	zbClient, err := zbc.NewClient(&zbc.ClientConfig{
 		GatewayAddress:         BrokerAddr,
-		UsePlaintextConnection: true})
+		UsePlaintextConnection: true,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +21,7 @@ func main() {
 	variables := make(map[string]interface{})
 	variables["orderId"] = "31243"
 
-	request, err := zbClient.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().VariablesFromMap(variables)
+	request, err := zbClient.NewCreateInstanceCommand().BPMNProcessId("order-process-2").LatestVersion().VariablesFromMap(variables)
 	if err != nil {
 		panic(err)
 	}
