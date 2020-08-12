@@ -11,14 +11,15 @@ const BrokerAddr = "0.0.0.0:26500"
 func main() {
 	zbClient, err := zbc.NewClient(&zbc.ClientConfig{
 		GatewayAddress:         BrokerAddr,
-		UsePlaintextConnection: true})
+		UsePlaintextConnection: true,
+	})
 	if err != nil {
 		panic(err)
 	}
 
 	ctx := context.Background()
 
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send(ctx)
+	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process-2.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}

@@ -12,14 +12,14 @@ const BrokerAddr = "0.0.0.0:26500"
 func main() {
 	zbClient, err := zbc.NewClient(&zbc.ClientConfig{
 		GatewayAddress:         BrokerAddr,
-		UsePlaintextConnection: true})
+		UsePlaintextConnection: true,
+	})
 
 	if err != nil {
 		panic(err)
 	}
 
 	ctx := context.Background()
-
 	topology, err := zbClient.NewTopologyCommand().Send(ctx)
 	if err != nil {
 		panic(err)

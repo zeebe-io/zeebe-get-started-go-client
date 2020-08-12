@@ -11,18 +11,20 @@ import (
 
 const BrokerAddr = "0.0.0.0:26500"
 
+var readyClose = make(chan struct{})
+
 func main() {
 	zbClient, err := zbc.NewClient(&zbc.ClientConfig{
 		GatewayAddress:         BrokerAddr,
-		UsePlaintextConnection: true})
+		UsePlaintextConnection: true,
+	})
 	if err != nil {
 		panic(err)
 	}
 
-	ctx := context.Background()
-
 	// deploy workflow
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process.bpmn").Send(ctx)
+	ctx := context.Background()
+	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process-4.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +35,7 @@ func main() {
 	variables := make(map[string]interface{})
 	variables["orderId"] = "31243"
 
-	request, err := zbClient.NewCreateInstanceCommand().BPMNProcessId("order-process").LatestVersion().VariablesFromMap(variables)
+	request, err := zbClient.NewCreateInstanceCommand().BPMNProcessId("order-process-4").LatestVersion().VariablesFromMap(variables)
 	if err != nil {
 		panic(err)
 	}
@@ -46,8 +48,9 @@ func main() {
 	fmt.Println(result.String())
 
 	jobWorker := zbClient.NewJobWorker().JobType("payment-service").Handler(handleJob).Open()
-	defer jobWorker.Close()
 
+	<-readyClose
+	jobWorker.Close()
 	jobWorker.AwaitClose()
 }
 
@@ -81,14 +84,21 @@ func handleJob(client worker.JobClient, job entities.Job) {
 	log.Println("Collect money using payment method:", headers["method"])
 
 	ctx := context.Background()
+	_, err = request.Send(ctx)
+	if err != nil {
+		panic(err)
+	}
 
-	request.Send(ctx)
+	log.Println("Successfully completed job")
+	close(readyClose)
 }
 
 func failJob(client worker.JobClient, job entities.Job) {
 	log.Println("Failed to complete job", job.GetKey())
 
 	ctx := context.Background()
-
-	client.NewFailJobCommand().JobKey(job.GetKey()).Retries(job.Retries - 1).Send(ctx)
+	_, err := client.NewFailJobCommand().JobKey(job.GetKey()).Retries(job.Retries - 1).Send(ctx)
+	if err != nil {
+		panic(err)
+	}
 }
