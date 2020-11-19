@@ -1,0 +1,19 @@
+name: Update the Zeebe version
+on: 
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: "The Zeebe version to update to"
+        required: true
+      PUSH_CHANGES:
+        description: "Pushes changes to main branch if set to true and test succeeds"
+        required: false
+        default: "false"
+jobs:
+  build:
+    name: Update the Zeebe version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./.github/workflows/persist-update-version.sh "${{ github.event.inputs.VERSION }}" "${{ github.event.inputs.PUSH_CHANGES }}"

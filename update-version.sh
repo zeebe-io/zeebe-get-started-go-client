@@ -18,30 +18,35 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-curl 0.0.0.0:9600/ready
+
+echo -e "\n--- Updating Zeebe dependency v$1 ---"
+sed -i -- "s/zeebe:.*/zeebe:$1/g" README.md
+sed -i -- "s/v.*/v$1/g" go.mod
+go mod tidy
+status=$?
+if [ $status -ne 0 ]; then
+  echo -e "Could not update go.mod file with tag v$1"
+  quit $status
+fi
+
+echo -e "\n--- Waiting for broker to start... ---"
+
+curl -s localhost:9600/ready
 while [ $?  -ne 0 ]; do
   echo -e "Broker not yet ready. Retrying in 4 seconds"
   sleep 4
-  curl 0.0.0.0:9600/ready
+  curl -s localhost:9600/ready
 done
-
-echo -e "\n--- Updating Zeebe dependency v$1 ---"
-
-sed -i -- "s/v.*/v$1/g" go.mod
-go mod tidy
-if [ $? -ne 0 ]; then
-  echo -e "Could not update go.mod file with tag v$1"
-  quit $?
-fi
 
 cd src 
 for gofile in *.go; do
   echo -e "\n--- Running example '$gofile' ---"
 
   go run $gofile
-  if [ $? -ne 0 ] ; then
-    echo "Failed to execute '$file': error code '$?'"
-    quit $?
+  status=$?
+  if [ $status -ne 0 ] ; then
+    echo "Failed to execute '$gofile': error code '$status'"
+    quit $status
   fi
 done
 
