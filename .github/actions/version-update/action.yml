@@ -1,0 +1,16 @@
+name: "Zeebe version update"
+description: "Update the Zeebe version in the guide and verify that it works"
+author: "zeebe-io"
+
+inputs:
+  VERSION:
+    description: "The Zeebe version to update to"
+    required: true
+  PUSH_CHANGES:
+    description: "Pushes changes to main branch if set to true and test succeeds"
+    required: false
+    default: "false"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
