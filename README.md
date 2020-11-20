@@ -25,13 +25,13 @@ go run example-4.go
 
 ## Updating this guide
 
-To update this guide for a version X.Y.Z, run:
+To test and update this guide for a new Zeebe version, go to the [Update Zeebe
+Version](https://github.com/zeebe-io/zeebe-get-started-go-client/actions?query=workflow%3A%22Update+the+Zeebe+version%22)
+workflow. Click `run workflow`, choose `master`, your version `x.y.z` and
+whether or not to push the changes.
 
-```shell
-./update-version.sh X.Y.Z
-```
-
-Check the output to see if the examples were executed successfully. If not, adjust them and re-run the script. 
+Note, that the Zeebe version `x.y.z` must be available as a docker image tagged
+as `camunda/zeebe:x.y.z`.
 
 ## Code of Conduct
 
