@@ -6,7 +6,7 @@ You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/cli
 First start a broker
 
 ```shell
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.25.1
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.25.2
 ```
 
 Then run any example in `src`:
