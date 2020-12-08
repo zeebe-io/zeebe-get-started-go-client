@@ -6,7 +6,7 @@ You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/cli
 First start a broker
 
 ```shell
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.25.2
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.25.3
 ```
 
 Then run any example in `src`:
@@ -31,7 +31,7 @@ workflow. Click `run workflow`, choose `master`, your version `x.y.z` and
 whether or not to push the changes.
 
 Note, that the Zeebe version `x.y.z` must be available as a docker image tagged
-as `camunda/zeebe:x.y.z`.
+as `camunda/zeebe:0.25.3`
 
 ## Code of Conduct
 
