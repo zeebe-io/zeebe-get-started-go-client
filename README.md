@@ -1,8 +1,35 @@
-# Zeebe get start with Go client
+# Zeebe - Get Started Go Client
+
+You can find the tutorial in the [Zeebe documentation](https://docs.camunda.io/docs/product-manuals/clients/go-client/get-started).)
+
+* [Web Site](https://zeebe.io)
+* [Documentation](https://docs.camunda.io/)
+* [Issue Tracker](https://github.com/zeebe-io/zeebe/issues)
+* [Slack Channel](https://zeebe-slackin.herokuapp.com/)
+* [User Forum](https://forum.zeebe.io)
+* [Contribution Guidelines](/CONTRIBUTING.md)
+
+## Camunda Cloud Deployment
+Export the connection settings as environment variables:
+
+```
+export ZEEBE_ADDRESS='[Zeebe API]'
+export ZEEBE_CLIENT_ID='[Client ID]'
+export ZEEBE_CLIENT_SECRET='[Client Secret]'
+export ZEEBE_AUTHORIZATION_SERVER_URL='[OAuth API]'
+```
+
+**Hint:** When you create client credentials in Camunda Cloud you have the option to download a file with above lines filled out for you.
+
+Then run any example in `src`:
+
+```shell
+cd src
+go run example-4.go
+```
 
 
-You can find the tutorial in the [Zeebe documentation](https://docs.zeebe.io/clients/go-client/get-started)
-
+## Docker Deployment
 First start a broker
 
 ```shell
@@ -16,12 +43,6 @@ cd src
 go run example-4.go
 ```
 
-* [Web Site](https://zeebe.io)
-* [Documentation](https://docs.zeebe.io)
-* [Issue Tracker](https://github.com/zeebe-io/zeebe/issues)
-* [Slack Channel](https://zeebe-slackin.herokuapp.com/)
-* [User Forum](https://forum.zeebe.io)
-* [Contribution Guidelines](/CONTRIBUTING.md)
 
 ## Updating this guide
 
