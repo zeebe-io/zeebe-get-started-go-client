@@ -2,11 +2,11 @@
 
 You can find the tutorial in the [Zeebe documentation](https://docs.camunda.io/docs/product-manuals/clients/go-client/get-started).)
 
-* [Web Site](https://zeebe.io)
+* [Web Site](https://camunda.com/products/cloud/)
 * [Documentation](https://docs.camunda.io/)
-* [Issue Tracker](https://github.com/zeebe-io/zeebe/issues)
+* [Issue Tracker](https://github.com/camunda-cloud/zeebe/issues)
 * [Slack Channel](https://zeebe-slackin.herokuapp.com/)
-* [User Forum](https://forum.zeebe.io)
+* [User Forum](https://forum.camunda.io/)
 * [Contribution Guidelines](/CONTRIBUTING.md)
 
 ## Camunda Cloud Deployment
@@ -33,7 +33,7 @@ go run example-4.go
 First start a broker
 
 ```shell
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:0.26.0
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:1.1.0
 ```
 
 Then run any example in `src`:
@@ -52,7 +52,7 @@ workflow. Click `run workflow`, choose `master`, your version `x.y.z` and
 whether or not to push the changes.
 
 Note, that the Zeebe version `x.y.z` must be available as a docker image tagged
-as `camunda/zeebe:0.26.0
+as `camunda/zeebe:1.1.0
 
 ## Code of Conduct
 
@@ -68,5 +68,5 @@ source files are made available under the terms of the [GNU Affero General
 Public License (GNU AGPLv3)][agpl]. See individual source files for
 details.
 
-[broker-core]: https://github.com/zeebe-io/zeebe/tree/master/broker-core
-[agpl]: https://github.com/zeebe-io/zeebe/blob/master/GNU-AGPL-3.0
+[broker-core]: https://github.com/camunda-cloud/zeebe/tree/master/broker-core
+[agpl]: https://github.com/camunda-cloud/zeebe/blob/master/GNU-AGPL-3.0
