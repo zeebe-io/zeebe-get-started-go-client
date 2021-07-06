@@ -46,7 +46,7 @@ func main() {
 
 	ctx := context.Background()
 
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process-2.bpmn").Send(ctx)
+	response, err := zbClient.NewDeployProcessCommand().AddResourceFile("order-process-2.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}
