@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/zeebe-io/zeebe/clients/go/pkg/zbc"
+	"github.com/camunda-cloud/zeebe/clients/go/pkg/zbc"
 	"os"
 )
 
@@ -46,7 +46,7 @@ func main() {
 
 	ctx := context.Background()
 
-	response, err := zbClient.NewDeployWorkflowCommand().AddResourceFile("order-process-2.bpmn").Send(ctx)
+	response, err := zbClient.NewDeployProcessCommand().AddResourceFile("order-process-2.bpmn").Send(ctx)
 	if err != nil {
 		panic(err)
 	}
