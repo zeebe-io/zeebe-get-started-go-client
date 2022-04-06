@@ -33,7 +33,7 @@ go run example-4.go
 First start a broker
 
 ```shell
-docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:1.1.0
+docker run --rm -d -p 26500:26500 --name broker camunda/zeebe:8.0.0
 ```
 
 Then run any example in `src`:
