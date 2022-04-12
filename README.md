@@ -1,3 +1,6 @@
+# ⚠️ 📣 This repository is no longer maintained, please visit https://github.com/camunda/camunda-platform-get-started
+
+
 # Zeebe - Get Started Go Client
 
 You can find the tutorial in the [Zeebe documentation](https://docs.camunda.io/docs/product-manuals/clients/go-client/get-started).)
